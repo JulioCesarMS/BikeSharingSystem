@@ -1,21 +1,42 @@
 [![My Skills](https://skillicons.dev/icons?i=py,html,css,git,mysql,vscode)](https://skillicons.dev)
 
-# 📁 **Project : BikeSharingSystem**
+
+#![Mapa](./figures/ima01.png)
 
 
-#![Mapa](./figures/fig01.jpg)
+# 🚲 **BikeSharingSystem**
+Descripción
+
+ECOBICIS ETL es un proyecto de ingeniería de datos desarrollado en Python para la extracción, transformación y carga (ETL) de información del sistema de bicicletas públicas ECOBICI.
+
+El proyecto integra datos operacionales provenientes de  [datos-abiertos](https://ecobici.cdmx.gob.mx/en/open-data/) para construir un Schema en MySQL.
+
+La solución automatiza el procesamiento de información relacionada con viajes, estaciones y usuarios, permitiendo generar indicadores analíticos optimizados para herramientas de Business Intelligence como Power BI, Tableau, Metabase o Apache Superset.
+
+Objetivos
+- Automatizar la extracción de información del sistema ECOBICI.
+- Integrar datos históricos de viajes, estaciones y usuarios.
+- Implementar un proceso ETL reproducible y escalable.
+- Construir un modelo dimensional para análisis estadístico y visualización.
+- Facilitar el análisis espacial y temporal de la movilidad urbana.
 
 
-Este proyecto desarrolla un pipeline de datos orientado al análisis de la movilidad urbana a partir de los viajes del sistema Ecobici en la Ciudad de México. Su objetivo principal es transformar datos crudos en información estructurada y útil para análisis avanzados. El proceso comienza con la extracción de datos de viajes en formato CSV, los cuales contienen información sobre estaciones de origen y destino.
-Posteriormente, se realiza una etapa de transformación para limpiar, normalizar y preparar los datos para carga en MySQL.
+# Requerimientos:
+- [Python 3.12.0](https://www.python.org/)
+- [MySQL](https://dev.mysql.com/downloads/workbench/)
+- [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/)
+- [VScode](https://code.visualstudio.com/)
 
 
-# Ejecución del proyecto
+# Flujo 
+- Extracción de archivos históricos.
+- Transformación y limpieza de datos.
+- Carga en tablas staging.
+- Actualización de dimensiones.
+- Poblamiento de la tabla de hechos.
+- Actualización incremental mediante claves únicas.
 
-- Descargar el proyecto en local : **Desktop** <break> 
-- Crear un ambiente virtual  <break>
-- Intalar dependencias <break> 
-- Activar el ambiente virtual <break> 
 
 
  
@@ -26,83 +47,139 @@ El proyecto está estructurado de la siguiente manera:
     ecobicis_pipeline/
     │
     ├── config/
-    │   └── config.yaml
-    │
+    │   └── settings.py
+    ├── dags/
+    │   └── seco_dags.py
     ├── data/
     │   ├── logs/                      # historial de descargas
-    │   ├── creacion_tabla.sql/        # creación de tabla en SQL
-    │
-    ├── logs/
-    │   └── pipeline_log.txt
-    │
-    ├── notebooks/
-    │   └── analysis.ipynb        # exploración y análisis
-    │
-    ├── figures/                      # (si usas SQL auxiliar)
-    │   └── fig01.png
-    │
+    │   ├── raw/                       # datos en crudo
+    ├── docs/                          # documentación del projecto en markdown
+    ├── figures/                       # imagenes 
+    ├── notebooks/                     # notebooks del projecto
+    ├── sql/                           # archivos .sql 
     ├── src/
     │   ├── database/
-    │   │   ├── neo4j_connection.py
+    │   │   ├── create_staging.py
+    │   │   ├── create_star_model.py
+    │   │   ├── tables.py
     │   │   └── mysql_connection.py   
-    │   │
-    │   ├── ingestion/
-    │   │   ├── scraper.py.py   # descarga de la página web
-    │   │   └── downloader.py
-    │   │
-    │   ├── tracking/
+    │   ├── extraction/
+    │   │   ├── downloader.py          # descarga de la información
+    │   │   └── scraper.py             # para extraer información  de la página web
+    │   ├── load/                      # carga de información
+    │   │   ├── loader.py              # dcarga de información a MySQL
     │   │   └── file_tracker.py
+    │   ├── transformation/            # transformación de los datos
+    │   │   └── cleaner.py             # transformación y limpieza de los datos 
+    │   ├── utils/                     # funciones auxiliares
     │   │
-    │   ├── transformation/
-    │   │   └── cleaner.py    
-    │   │
-    │   ├── utils/
-    │   │   └── getFilenames.py
-    │   │
-    │   └── pipeline.py
+    │   └── pipeline/                  # pipeline para ejecutar todo el proceso
     │       └── run_pipeline.py
     │
-    ├── dags/                     # (opcional Airflow)
-    │   └── ecobicis_dag.py
-    │
-    ├── main.py
-    ├── Dockerfile
-    ├── requirements.txt
-    └── README.md
+    ├── .env                              # Variables de entorno
+    ├── .gitignore                        # Evitar subir al repositorio archivos no deseados
+    ├── main.py                           # Punto de entrada principal del proyecto
+    ├── Dockerfile                        # Imagen Docker de la aplicación
+    ├── Docke-compose.yml                 # Orquestación de contenedores Docker
+    ├── Readme.md                         # Documentación principal
+    └── requirements.txt                  # Dependencias Python
 
 
- # 1.- Intalación de Python y otras dependencias
  
- - Descargar Python **versión 3.12.0** e instalarlo:  `https://www.python.org/downloads/` <break> 
- - Descargar e instalar VSCode :  `https://code.visualstudio.com/ ` (Opcional)<break>
- - Descargar e instalar Git : `https://git-scm.com/downloads` <break>
- - Descargar e instalar MySQL : `https://git-scm.com/downloads` <break>
- - Descargar e instalar Docker : `https://git-scm.com/downloads` <break>
-
-# 2.- Clonar el proyecto a una carpeta en escritorio
- 
-- Crear una carpeta en escritorio p.e. "BikeSharingSystem" <break> 
-- Click derecho en cualquier lugar dentro de la carpeta y seleccionar **"Git Bash Here"** <break> 
-- En la consola de Git ingtroducir siguiente comandos: <break> 
-  - `git init` <break> 
-  - `git clone https://github.com/JulioCesarMS/BikeSharingSystem` <break>
-  - Esperar unos minutos a que descargue los archivos en la carpeta
+ # Intalación de Python y otras dependencias
   
-
-# 3.- Creación de ambiente virtual
-
- El primer paso es ingresar al directorio (carpeta que contiene los archivos)
-  - En la barra inferior de inicio de windows teclear `cmd` en el ícono **buscar**.
-  - Después teclearlos siguientes comandos:
-    `cd Desktop`  y enter <break>
+ Descargar e instalas todas herramientas en requerimientos.
  
-    `cd BikeSharingSystem` y enter <break>
+ # Clonar el proyecto a una carpeta en escritorio
+  
+ - Crear una carpeta en escritorio p.e. "delitos_etl" <break> 
+ - Click derecho en cualquier lugar dentro de la carpeta y seleccionar **"Git Bash Here"** <break> 
+ - En la consola de Git ingtroducir siguiente comandos: <break> 
+   ```bash
+   git clone https://github.com/JulioCesarMS/BikeSharingSystem.git
  
-     **Observación**
+   cd ecobicis_etl
+   ```
+   - Esperar unos minutos a que descargue los archivos en la carpeta
+   
  
-     Otra opción es introducir la ruta completa, p.e. `cd Desktop/BikeSharingSystem`. Note la dirección del ícono slash `/`, si copia la ruta desde la carpeta compruebe que sea la correcta en caso contrario realizar la sustitución manualmente.
-Una vez que el directorio de la consola se encuentre dentro de la carpeta ejecutar los siguientes comandos, uno a la vez,  en consola (cmd para windown o bien en terminal de linux) 
+ # Crear archivo `.env`
+ 
+ Crear en MySQL una conexión, con usuario, y contraseña, posteriormente una base llamada "delitos". Con esa información  crear un archivo `.env` en la raíz del proyecto:
+ 
+ ```env
+ DB_HOST=host.docker.internal
+ DB_PORT=3306
+ DB_NAME=delitos
+ DB_USER= usuario raíz en MySQL
+ DB_PASSWORD= contraseña para acceder a la conexión en MySQL
+ ```
+  
+ # Creación de ambiente virtual
+ 
+  Es recomendable crear un ambiente virtual para fijar la versión de python, así como las dependencias instaladas.
+ 
+ Crear entorno virtual:
+ 
+ ```bash
+ python -m venv venv
+ ```
+ 
+ Activar entorno:
+ 
+ En Windows
+ 
+ ```bash
+ venv\Scripts\activate
+ ```
+ 
+ 
+ # Construir y ejecutar Docker
+ 
+ Ejecutar el siguiente comando:
+ 
+ ```bash
+ docker compose up --build
+ ```
+ ![Proyecto](./figures/docker.png)
+ 
+ 
+ Este comando:
+ - Construye la imagen Docker
+ - Levanta el contenedor
+ - Ejecuta automáticamente el pipeline principal
+ 
+ para detener el contenedor:
+ ```bash
+ docker compose down
+ ```
+ 
+ ver logs del contenedor: 
+ ```bash
+ docker compose logs -f
+ ```
+ 
+ # Orquestación con Prefect
+ 
+ El proyecto utiliza Prefect para automatizar la ejecución de pipelines.
+ 
+ Ejecutar deployment:
+ 
+ ```bash
+ python orchestration/deploy.py
+ ```
+ 
+ 
+ # Consultas
+ 
+ Una vez cargada la información se pueden realizar consultas
+ 
+ 
+ ![Proyecto](./figures/consulta.png)
+ 
+ 
  
 
-
-# Fuentes de consulta
+ 
+ 
+ 

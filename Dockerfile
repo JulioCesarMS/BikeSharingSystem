@@ -1,5 +1,5 @@
 # Imagen base ligera de Python
-FROM python:3.12.0
+FROM python:3.12-slim
 
 # Evita archivos .pyc y buffering
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -11,6 +11,7 @@ WORKDIR /app
 # Instalar dependencias del sistema (opcional, útil para pandas, lxml, etc.)
 RUN apt-get update && apt-get install -y \
     build-essential \
+    default-libmysqlclient-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements primero (para aprovechar cache)

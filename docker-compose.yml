@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: ecobicis_etl
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_NAME: ecobicis
+      DB_USER: root
+      DB_PASSWORD: astro123
+    volumes:
+      - .:/app
+    command: python main.py
+
+  # si se quiere mysql en docker 
+  # db:
+  #     image: mysql:8.0
+  #     container_name: mysql_ecobicis
+  #     restart: always
+  #     environment:
+  #       MYSQL_ROOT_PASSWORD: astro123
+  #       MYSQL_DATABASE: ecobicis
+  #     ports:
+  #       - "3306:3306"
+  #     volumes:
+  #       - mysql_data:/var/lib/mysql
+
+  # airflow:
+  #   image: apache/airflow:2.7.0
+  #   container_name: airflow
+  #   environment:
+  #     AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+
+  #     # variables conexión
+  #     DB_HOST: host.docker.internal
+  #     DB_PORT: 3306
+  #     DB_NAME: ecobicis
+  #     DB_USER: root
+  #     DB_PASSWORD: astro123
+
+  #   volumes:
+  #     - ./dags:/opt/airflow/dags
+  #     - .:/app
+
+  #   ports:
+  #     - "8080:8080"
+
+  #   command: >
+  #     bash -c "
+  #     airflow db init &&
+  #     airflow users create
+  #       --username admin
+  #       --password admin
+  #       --firstname admin
+  #       --lastname admin
+  #       --role Admin
+  #       --email admin@email.com &&
+  #     airflow scheduler & airflow webserver
+  #     "

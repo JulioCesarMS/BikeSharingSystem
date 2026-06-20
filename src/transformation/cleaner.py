@@ -13,7 +13,7 @@ def parse_fecha(col):
     return fecha
 
 
-def clean_data(base, nombre_archivo):
+def transform_data_staging(base, nombre_archivo):
     
     
     df = base.copy()
@@ -99,6 +99,19 @@ def clean_data(base, nombre_archivo):
     df = df.astype(object)
     df = df.where(pd.notnull(df), None)
     
-    for col in ["Fecha_Retiro", "Fecha_Arribo", "Hora_Retiro", "Hora_Arribo"]:
-        print(col, df[col].apply(type).unique())
+    #for col in ["Fecha_Retiro", "Fecha_Arribo", "Hora_Retiro", "Hora_Arribo"]:
+    #    print(col, df[col].apply(type).unique())
+    return df
+
+
+
+def transform_dim_station(base):
+    df = base.copy()
+    df = df.sort_values('cve_station')
+    #df["cve_station"] = pd.to_numeric(df["cve_station"], errors="coerce")
+    df["cve_station"] = df["cve_station"].astype(str)
+    df["name"] = df["name"].astype(str)
+    df["lat"] = pd.to_numeric(df["lat"], errors="coerce").round(7)
+    df["lon"] = pd.to_numeric(df["lon"], errors="coerce").round(7)
+    df["capacity"] = pd.to_numeric(df["capacity"], errors="coerce").fillna(0)
     return df

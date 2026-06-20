@@ -5,8 +5,7 @@ from config.settings import DATA_URL, BASE_URL
 def get_file_links():
     result = requests.get(DATA_URL)
     soup = BeautifulSoup(result.text, "lxml")
-
-    
+      
     links = []
 
     box = soup.find('div', class_='elementor-container')
@@ -19,7 +18,7 @@ def get_file_links():
 
             links.append({
                 "url": full_url,
-                "filename": filename
+                "filename": filename.replace(".csv", "")
             })
 
     return links
